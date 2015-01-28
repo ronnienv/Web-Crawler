@@ -142,9 +142,7 @@ public class MyCrawler extends WebCrawler {
 			if(!stopWords.containsKey(s))
 				topWords.add(new Frequency(s,totalTokenList.get(s)));
 		}
-		
 
-		
 		try {
 			pw = new PrintWriter(new File("CommonWords.txt"));
 			for(int i = 500; i > 0 && !topWords.isEmpty(); i--)
@@ -155,6 +153,7 @@ public class MyCrawler extends WebCrawler {
 			pw.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+
 		}
 //		System.out.println("The stop words are: " + stopWords.toString());
 
