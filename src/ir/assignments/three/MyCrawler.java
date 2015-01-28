@@ -140,11 +140,8 @@ public class MyCrawler extends WebCrawler {
 		for(String s : totalTokenList.keySet())
 		{
 			//if the top word is > 1 character add it
-			Frequency currentWord = topWords.poll();
-			if(currentWord.getText().length() > 1){
-				System.out.print(topWords.poll() + ", ");
-			}
-
+			if(!stopWords.containsKey(s) && s.length() > 1)
+				topWords.add(new Frequency(s,totalTokenList.get(s)));
 		}
 
 		try {
