@@ -63,21 +63,22 @@ public class MyCrawler extends WebCrawler {
 			URLList.put(url, text.length());
 			List<WebURL> links = htmlParseData.getOutgoingUrls();
 			
-			//tokenize the text from the page and get the size
-			ArrayList<String> tokenList = Utilities.tokenizeString(text);
-			int wordsOnPage = tokenList.size();
-			
-			//if you find a page that is larger than the current largest one
-			//reassign the appropriate variables
-			if(wordsOnPage > largestPageSize){
-				largestPageSize = wordsOnPage;
-				largestPage = url;
-			}
+//			//tokenize the text from the page and get the size
+//			ArrayList<String> tokenList = Utilities.tokenizeString(text);
+//			int wordsOnPage = tokenList.size();
+//			
+//			//if you find a page that is larger than the current largest one
+//			//reassign the appropriate variables
+//			if(wordsOnPage > largestPageSize){
+//				largestPageSize = wordsOnPage;
+//				largestPage = url;
+//			}
 
 			//                    System.out.println("Text length: " + text.length());
 			//                    System.out.println("Html length: " + html.length());
 			System.out.println(WordFrequencyCounter.computeWordFrequencies(Utilities.tokenizeString(text), 500));
 			System.out.println("Number of outgoing links: " + links.size());
+//			System.out.println(html);
 		}
 	}
 
@@ -106,8 +107,6 @@ public class MyCrawler extends WebCrawler {
 		System.out.println("The page : " + maxKey + " has the longest text size of " + max + " words");
 		
 		System.out.println("There are " + subdomains.size() + " subdomains");
-		
-		System.out.println("The largest page is: " + getLargestPage());
 		
 //		ArrayList<Frequency> topStopWords = new ArrayList<Frequency>();
 		System.out.println("The stop words are: " + stopWords.toString());
