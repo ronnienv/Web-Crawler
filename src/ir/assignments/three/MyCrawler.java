@@ -21,6 +21,8 @@ public class MyCrawler extends WebCrawler {
 			+ "|png|tiff?|mid|mp2|mp3|mp4"
 			+ "|wav|avi|mov|mpeg|ram|m4v|pdf" 
 			+ "|rm|smil|wmv|swf|wma|zip|rar|gz))$");
+	private String largestPage = "";
+	private int largestPageSize = 0;
 
 	/**
 	 * You should implement this function to specify whether
@@ -61,15 +63,21 @@ public class MyCrawler extends WebCrawler {
 			URLList.put(url, text.length());
 			List<WebURL> links = htmlParseData.getOutgoingUrls();
 			
+			//tokenize the text from the page and get the size
 			ArrayList<String> tokenList = Utilities.tokenizeString(text);
-			int wordsOnPage= tokenList.size();
+			int wordsOnPage = tokenList.size();
+			
+			//if you find a page that is larger than the current largest one
+			//reassign the appropriate variables
+			if(wordsOnPage > largestPageSize){
+				largestPageSize = wordsOnPage;
+				largestPage = url;
+			}
 
 			//                    System.out.println("Text length: " + text.length());
 			//                    System.out.println("Html length: " + html.length());
 			System.out.println(WordFrequencyCounter.computeWordFrequencies(Utilities.tokenizeString(text), 500));
 			System.out.println("Number of outgoing links: " + links.size());
-			
-			System.out.println(text);
 		}
 	}
 
@@ -99,9 +107,16 @@ public class MyCrawler extends WebCrawler {
 		
 		System.out.println("There are " + subdomains.size() + " subdomains");
 		
-		ArrayList<Frequency> topStopWords = new ArrayList<Frequency>();
+//		ArrayList<Frequency> topStopWords = new ArrayList<Frequency>();
 		System.out.println("The stop words are: " + stopWords.toString());
-		
 
+	}
+	
+	public String getLargestPage(){
+		return largestPage;
+	}
+	
+	public int getLargestPageSize(){
+		return largestPageSize;
 	}
 }
