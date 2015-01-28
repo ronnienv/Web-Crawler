@@ -3,6 +3,7 @@ package ir.assignments.three;
 import ir.assignments.two.a.Utilities;
 import ir.assignments.two.b.WordFrequencyCounter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
@@ -76,7 +77,7 @@ public class MyCrawler extends WebCrawler {
 		return s2[0];
 	}
 
-	public void printEndResults() {
+	public void printEndResults(HashMap<String, Integer> stopWords) {
 		System.out.println("Number of unique pages: " + URLList.size());
 
 		int max = 0;
@@ -90,9 +91,12 @@ public class MyCrawler extends WebCrawler {
 			}
 		}
 
-		System.out.println("The page : " + maxKey + " has the longest text size of " + max);
+		System.out.println("The page : " + maxKey + " has the longest text size of " + max + " words");
 		
 		System.out.println("There are " + subdomains.size() + " subdomains");
+		
+		ArrayList<Frequency> topStopWords = new ArrayList<Frequency>();
+		System.out.println("The stop words are: " + stopWords.toString());
 		
 
 	}
