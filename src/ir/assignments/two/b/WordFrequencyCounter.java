@@ -172,7 +172,7 @@ public final class WordFrequencyCounter {
 				while(string1.charAt(index) == string2.charAt(index)){
 					index++;
 					//if we are at the end of a word the smaller word should appear first
-					if(index > string1.length() -1 || index > string2.length()){
+					if(index > string1.length() -1 || index > string2.length() -1){
 						if(string1.length() >= string2.length()){
 							return 1;
 						}

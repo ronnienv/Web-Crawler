@@ -1,11 +1,13 @@
 package ir.assignments.three;
 
+import ir.assignments.two.a.Frequency;
 import ir.assignments.two.a.Utilities;
 import ir.assignments.two.b.WordFrequencyCounter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.regex.Pattern;
 
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -17,6 +19,7 @@ public class MyCrawler extends WebCrawler {
 
 	private final static HashMap<String, Integer> URLList = new HashMap<String, Integer>();
 	private final static HashMap<String, Integer> subdomains = new HashMap<String, Integer>();
+	private final static HashMap<String, Integer> totalTokenList = new HashMap<String, Integer>();
 	private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|bmp|gif|jpe?g" 
 			+ "|png|tiff?|mid|mp2|mp3|mp4"
 			+ "|wav|avi|mov|mpeg|ram|m4v|pdf" 
@@ -41,10 +44,10 @@ public class MyCrawler extends WebCrawler {
 	@Override
 	public void visit(Page page) {          
 		String url = page.getWebURL().getURL();
-		
+
 		System.out.println("URL: " + url);
 		String subdomain = getSubdomain(url);
-		
+
 		if(!subdomain.isEmpty())
 		{
 			if(subdomains.containsKey(subdomain))
@@ -53,30 +56,43 @@ public class MyCrawler extends WebCrawler {
 				subdomains.put(subdomain, 1);
 		}
 		System.out.println(subdomain);
-		
+
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
 			String text = htmlParseData.getText();
 			String html = htmlParseData.getHtml();
-			URLList.put(url, text.length());
+
 			List<WebURL> links = htmlParseData.getOutgoingUrls();
-			
+
 			ArrayList<String> tokenList = Utilities.tokenizeString(text);
 			int wordsOnPage= tokenList.size();
+			URLList.put(url, wordsOnPage);
+
+			//add all tokens to master token list
+			List<Frequency> currentTokens = WordFrequencyCounter.computeWordFrequencies(tokenList);
+			for(int i = 0; i < currentTokens.size(); i++)
+			{
+				Frequency f = currentTokens.get(i);
+				int value = f.getFrequency();
+				if(totalTokenList.containsKey(f.getText()))
+					value += totalTokenList.get(f.getText());
+				totalTokenList.put(f.getText(), value);
+			}
 
 			//                    System.out.println("Text length: " + text.length());
 			//                    System.out.println("Html length: " + html.length());
-			System.out.println(WordFrequencyCounter.computeWordFrequencies(Utilities.tokenizeString(text), 500));
-			System.out.println("Number of outgoing links: " + links.size());
-			
-			System.out.println(text);
+//			System.out.println(currentTokens);
+//			System.out.println("Number of outgoing links: " + links.size());
 		}
 	}
 
 	public String getSubdomain(String URL)
 	{
-
-		String[] s = URL.split("http://www");
+		String[] s;
+		if(URL.contains("http://www."))
+			s = URL.split("http://www");
+		else
+			s = URL.split("http://");
 		String[] s2 =  s[1].split(".ics.uci.edu/");
 		return s2[0];
 	}
@@ -96,12 +112,24 @@ public class MyCrawler extends WebCrawler {
 		}
 
 		System.out.println("The page : " + maxKey + " has the longest text size of " + max + " words");
-		
+
 		System.out.println("There are " + subdomains.size() + " subdomains");
+
+		PriorityQueue<Frequency> topWords = new PriorityQueue<Frequency>(totalTokenList.size(), WordFrequencyCounter.freqComparator);
+
+		//adds tokens to top 500 list if they aren't in the list of stop words
+		for(String s : totalTokenList.keySet())
+		{
+			if(!stopWords.containsKey(s))
+				topWords.add(new Frequency(s,totalTokenList.get(s)));
+		}
 		
-		ArrayList<Frequency> topStopWords = new ArrayList<Frequency>();
+		for(int i = 500; i > 0 && !topWords.isEmpty(); i--)
+		{
+			System.out.print(topWords.poll() + ", ");
+		}
 		System.out.println("The stop words are: " + stopWords.toString());
-		
+
 
 	}
 }

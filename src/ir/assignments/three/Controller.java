@@ -27,13 +27,13 @@ public class Controller {
 		
 		Date startTime = Calendar.getInstance().getTime();
 		String crawlStorageFolder = "dump";
-		int numberOfCrawlers = 7;
+		int numberOfCrawlers = 10;
 
 		CrawlConfig config = new CrawlConfig();
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
 		config.setPolitenessDelay(300);
 		config.setResumableCrawling(false);
-		config.setMaxPagesToFetch(5);
+		config.setMaxPagesToFetch(500);
 		config.setCrawlStorageFolder(crawlStorageFolder);
 
 		/*
