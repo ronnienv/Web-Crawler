@@ -139,8 +139,12 @@ public class MyCrawler extends WebCrawler {
 		//adds tokens to top 500 list if they aren't in the list of stop words
 		for(String s : totalTokenList.keySet())
 		{
-			if(!stopWords.containsKey(s))
-				topWords.add(new Frequency(s,totalTokenList.get(s)));
+			//if the top word is > 1 character add it
+			Frequency currentWord = topWords.poll();
+			if(currentWord.getText().length() > 1){
+				System.out.print(topWords.poll() + ", ");
+			}
+
 		}
 
 		try {
