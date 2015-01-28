@@ -4,6 +4,9 @@ import ir.assignments.two.a.Frequency;
 import ir.assignments.two.a.Utilities;
 import ir.assignments.two.b.WordFrequencyCounter;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +39,8 @@ public class MyCrawler extends WebCrawler {
 	public boolean shouldVisit(WebURL url) {
 		String href = url.getURL().toLowerCase();
 		boolean URLExists = URLList.containsKey(href);
-		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists;
+		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists && !href.contains("calendar.ics.uci.edu/") && !href.contains("?=") 
+				&& !href.contains("ftp") && !href.contains("fano"); 
 	}
 
 	/**
@@ -52,10 +56,11 @@ public class MyCrawler extends WebCrawler {
 
 		if(!subdomain.isEmpty())
 		{
-			if(subdomains.containsKey(subdomain))
-				subdomains.put(subdomain, subdomains.get(subdomain)+1);
+			String subdomainURL = "http://" +subdomain + ".ics.uci.edu/";
+			if(subdomains.containsKey(subdomainURL))
+				subdomains.put(subdomainURL, subdomains.get(subdomainURL)+1);
 			else
-				subdomains.put(subdomain, 1);
+				subdomains.put(subdomainURL, 1);
 		}
 		System.out.println(subdomain);
 
@@ -117,7 +122,18 @@ public class MyCrawler extends WebCrawler {
 		System.out.println("The page : " + maxKey + " has the longest text size of " + max + " words");
 
 		System.out.println("There are " + subdomains.size() + " subdomains");
-
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new File("Subdomains.txt"));
+			for(String s: subdomains.keySet())
+			{
+				pw.write(s + ", " + subdomains.get(s) + "\n");
+			}
+			pw.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		PriorityQueue<Frequency> topWords = new PriorityQueue<Frequency>(totalTokenList.size(), WordFrequencyCounter.freqComparator);
 
 		//adds tokens to top 500 list if they aren't in the list of stop words
@@ -127,20 +143,21 @@ public class MyCrawler extends WebCrawler {
 				topWords.add(new Frequency(s,totalTokenList.get(s)));
 		}
 		
-		for(int i = 500; i > 0 && !topWords.isEmpty(); i--)
-		{
-			System.out.print(topWords.poll() + ", ");
+
+		
+		try {
+			pw = new PrintWriter(new File("CommonWords.txt"));
+			for(int i = 500; i > 0 && !topWords.isEmpty(); i--)
+			{
+				pw.write(topWords.poll() + ", " + " \n");
+			}
+
+			pw.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
-		System.out.println("The stop words are: " + stopWords.toString());
+//		System.out.println("The stop words are: " + stopWords.toString());
 
 
-	}
-	
-	public String getLargestPage(){
-		return largestPage;
-	}
-	
-	public int getLargestPageSize(){
-		return largestPageSize;
 	}
 }
