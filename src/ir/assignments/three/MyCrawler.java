@@ -107,6 +107,8 @@ public class MyCrawler extends WebCrawler {
 		
 		System.out.println("There are " + subdomains.size() + " subdomains");
 		
+		System.out.println("The largest page is: " + getLargestPage());
+		
 //		ArrayList<Frequency> topStopWords = new ArrayList<Frequency>();
 		System.out.println("The stop words are: " + stopWords.toString());
 
