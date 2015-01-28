@@ -129,7 +129,10 @@ public class MyCrawler extends WebCrawler {
 		
 		for(int i = 500; i > 0 && !topWords.isEmpty(); i--)
 		{
-			System.out.print(topWords.poll() + ", ");
+			Frequency currentWord = topWords.poll();
+			if(currentWord.getText().length() > 1){
+				System.out.print(topWords.poll() + ", ");
+			}
 		}
 		System.out.println("The stop words are: " + stopWords.toString());
 
