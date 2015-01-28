@@ -7,6 +7,7 @@ import ir.assignments.two.a.Utilities;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -152,6 +153,44 @@ public final class WordFrequencyCounter {
 		}
 		return wf;
 	}
+	
+	//comparator for frequency of tokens for priority queue use
+	public static Comparator<Frequency> freqComparator = new Comparator<Frequency>(){
+
+		public int compare(Frequency o1, Frequency o2) {
+			// if returns + o2 is bigger, if - o1 is bigger
+			int difference = o2.getFrequency() - o1.getFrequency();
+			if (difference != 0){
+				return difference;
+			}
+			//they start with same character, so alphabetize
+			else{
+				String string1 = o1.getText();
+				String string2 = o2.getText();
+				
+				int index = 0;
+				while(string1.charAt(index) == string2.charAt(index)){
+					index++;
+					//if we are at the end of a word the smaller word should appear first
+					if(index > string1.length() -1 || index > string2.length()){
+						if(string1.length() >= string2.length()){
+							return 1;
+						}
+						else{
+							return -1;
+						}
+					}
+				}
+				if(string1.charAt(index) > string2.charAt(index)){
+					return 1;
+				}
+				else{
+					return -1;
+				}
+				
+			}
+		}
+	};
 
 	/**
 	 * Runs the word frequency counter. The input should be the path to a text file.

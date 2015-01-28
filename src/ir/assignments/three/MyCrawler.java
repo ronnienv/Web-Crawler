@@ -3,8 +3,8 @@ package ir.assignments.three;
 import ir.assignments.two.a.Utilities;
 import ir.assignments.two.b.WordFrequencyCounter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -60,11 +60,16 @@ public class MyCrawler extends WebCrawler {
 			String html = htmlParseData.getHtml();
 			URLList.put(url, text.length());
 			List<WebURL> links = htmlParseData.getOutgoingUrls();
+			
+			ArrayList<String> tokenList = Utilities.tokenizeString(text);
+			int wordsOnPage= tokenList.size();
 
 			//                    System.out.println("Text length: " + text.length());
 			//                    System.out.println("Html length: " + html.length());
 			System.out.println(WordFrequencyCounter.computeWordFrequencies(Utilities.tokenizeString(text), 500));
 			System.out.println("Number of outgoing links: " + links.size());
+			
+			System.out.println(text);
 		}
 	}
 
