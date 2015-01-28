@@ -24,6 +24,8 @@ public class MyCrawler extends WebCrawler {
 			+ "|png|tiff?|mid|mp2|mp3|mp4"
 			+ "|wav|avi|mov|mpeg|ram|m4v|pdf" 
 			+ "|rm|smil|wmv|swf|wma|zip|rar|gz))$");
+	private String largestPage = "";
+	private int largestPageSize = 0;
 
 	/**
 	 * You should implement this function to specify whether
@@ -83,6 +85,7 @@ public class MyCrawler extends WebCrawler {
 			//                    System.out.println("Html length: " + html.length());
 //			System.out.println(currentTokens);
 //			System.out.println("Number of outgoing links: " + links.size());
+
 		}
 	}
 
@@ -131,5 +134,13 @@ public class MyCrawler extends WebCrawler {
 		System.out.println("The stop words are: " + stopWords.toString());
 
 
+	}
+	
+	public String getLargestPage(){
+		return largestPage;
+	}
+	
+	public int getLargestPageSize(){
+		return largestPageSize;
 	}
 }
