@@ -4,6 +4,7 @@ import ir.assignments.two.a.Frequency;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,13 +32,13 @@ public class Controller {
 
 		Date startTime = Calendar.getInstance().getTime();
 		String crawlStorageFolder = "dump";
-		int numberOfCrawlers = 1000;
+		int numberOfCrawlers = 100;
 
 		CrawlConfig config = new CrawlConfig();
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
 		config.setPolitenessDelay(300);
 		config.setResumableCrawling(false);
-		//		config.setMaxPagesToFetch(10);
+		config.setMaxPagesToFetch(30);
 		config.setCrawlStorageFolder(crawlStorageFolder);
 
 		/*
@@ -55,7 +56,7 @@ public class Controller {
 		//            controller.addSeed("http://www.ics.uci.edu/~welling/");
 		//            controller.addSeed("http://www.ics.uci.edu/~lopes/");
 		controller.addSeed("http://www.ics.uci.edu/");
-
+		
 		/*
 		 * Start the crawl. This is a blocking operation, meaning that your code
 		 * will reach the line after this only when crawling is finished.
@@ -65,6 +66,7 @@ public class Controller {
 
 		Date endTime = Calendar.getInstance().getTime();
 		System.out.println("The program took a total of : " + (endTime.getTime()-startTime.getTime()) + " seconds");
+		updateIndex();
 		c.printEndResults(stopWords);
 	}
 
@@ -77,9 +79,9 @@ public class Controller {
 			HashMap<String, ArrayList<Frequency>> index = new HashMap<String, ArrayList<Frequency>>();
 
 			//import index into memory
-			while(s.hasNextLine())
+			while(s2.hasNextLine())
 			{	
-				Scanner line = new Scanner(s.nextLine());
+				Scanner line = new Scanner(s2.nextLine());
 				String key = line.next();
 				while(line.hasNext())
 				{
@@ -127,12 +129,26 @@ public class Controller {
 				}
 				line.close();
 			}
-			
 			s.close();
 			s2.close();
+			PrintWriter pw = new PrintWriter("Index.txt");
+			for(String key: index.keySet())
+			{
+				pw.write(key);
+				ArrayList<Frequency> al = index.get(key);
+				for(Frequency f : al)
+				{
+					pw.write(" " + f.getText() + " " + f.getFrequency());
+				}
+				pw.write("\n");
+			}
+			pw.close();
+			
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+
+		System.out.println("Index updated");
 	}
 }
