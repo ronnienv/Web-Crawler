@@ -80,6 +80,19 @@ public class Crawler extends WebCrawler {
 				}
 				pw.close();
 				
+				//output urlMapper to preindex
+				pw = new PrintWriter(new File("PreIndex.txt"));
+				for(String key: urlMapper.keySet()){
+					pw.write(key + " ");
+					ArrayList<Frequency> al = urlMapper.get(key);
+					for(Frequency f : al)
+					{
+						pw.write(f.getText() + " " + f.getFrequency());
+					}
+					pw.write("\n");
+				}
+				pw.close();
+				
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 
