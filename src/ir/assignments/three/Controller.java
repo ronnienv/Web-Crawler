@@ -23,17 +23,17 @@ public class Controller {
 			stopWords.put(s.nextLine(), 1);
 		}
 		s.close();
-		System.out.println(stopWords.toString());
+//		System.out.println(stopWords.toString());
 		
 		Date startTime = Calendar.getInstance().getTime();
 		String crawlStorageFolder = "dump";
-		int numberOfCrawlers = 10;
+		int numberOfCrawlers = 1000;
 
 		CrawlConfig config = new CrawlConfig();
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
 		config.setPolitenessDelay(300);
 		config.setResumableCrawling(false);
-		config.setMaxPagesToFetch(200);
+//		config.setMaxPagesToFetch(10);
 		config.setCrawlStorageFolder(crawlStorageFolder);
 
 		/*

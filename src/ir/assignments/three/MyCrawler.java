@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -27,9 +28,7 @@ public class MyCrawler extends WebCrawler {
 			+ "|png|tiff?|mid|mp2|mp3|mp4"
 			+ "|wav|avi|mov|mpeg|ram|m4v|pdf" 
 			+ "|rm|smil|wmv|swf|wma|zip|rar|gz))$");
-	private String largestPage = "";
-	private int largestPageSize = 0;
-
+	private static int pageNumber = 0;
 	/**
 	 * You should implement this function to specify whether
 	 * the given url should be crawled or not (based on your
@@ -48,10 +47,14 @@ public class MyCrawler extends WebCrawler {
 	 * to be processed by your program.
 	 */
 	@Override
-	public void visit(Page page) {          
+	public void visit(Page page) {
+		
+		pageNumber++;
+		if((pageNumber % 250) == 0)
+			System.out.println("Page number: " + pageNumber);
 		String url = page.getWebURL().getURL();
 
-		System.out.println("URL: " + url);
+//		System.out.println("URL: " + url);
 		String subdomain = getSubdomain(url);
 
 		if(!subdomain.isEmpty())
@@ -62,7 +65,7 @@ public class MyCrawler extends WebCrawler {
 			else
 				subdomains.put(subdomainURL, 1);
 		}
-		System.out.println(subdomain);
+//		System.out.println(subdomain);
 
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
@@ -96,8 +99,10 @@ public class MyCrawler extends WebCrawler {
 
 	public String getSubdomain(String URL)
 	{
+		if(URL.equals("http://www.ics.uci.edu/"))
+			return "";
 		String[] s;
-		if(URL.contains("http://www."))
+		if(URL.contains("http://www"))
 			s = URL.split("http://www");
 		else
 			s = URL.split("http://");
@@ -122,12 +127,23 @@ public class MyCrawler extends WebCrawler {
 		System.out.println("The page : " + maxKey + " has the longest text size of " + max + " words");
 
 		System.out.println("There are " + subdomains.size() + " subdomains");
+		
+		ArrayList<String> al = new ArrayList<String>();
+		for(String s: subdomains.keySet())
+		{
+			al.add(s);
+		}
+		
+		String[] subdomainsPrint = Arrays.copyOf(al.toArray(), al.size(), String[].class);
+		Arrays.sort(subdomainsPrint);
+		
 		PrintWriter pw = null;
 		try {
 			pw = new PrintWriter(new File("Subdomains.txt"));
-			for(String s: subdomains.keySet())
+			for(int i = 0; i < subdomainsPrint.length; i++)
 			{
-				pw.write(s + ", " + subdomains.get(s) + "\n");
+				String subdomain = subdomainsPrint[i];
+				pw.write(subdomain + ", " + subdomains.get(subdomain) + "\n");
 			}
 			pw.close();
 		} catch (FileNotFoundException e) {
@@ -148,7 +164,7 @@ public class MyCrawler extends WebCrawler {
 			pw = new PrintWriter(new File("CommonWords.txt"));
 			for(int i = 500; i > 0 && !topWords.isEmpty(); i--)
 			{
-				pw.write(topWords.poll() + ", " + " \n");
+				pw.write(topWords.poll() + " \n");
 			}
 
 			pw.close();
