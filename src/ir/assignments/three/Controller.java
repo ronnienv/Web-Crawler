@@ -1,6 +1,10 @@
 package ir.assignments.three;
 
+import ir.assignments.two.a.Frequency;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,8 +27,8 @@ public class Controller {
 			stopWords.put(s.nextLine(), 1);
 		}
 		s.close();
-//		System.out.println(stopWords.toString());
-		
+		//		System.out.println(stopWords.toString());
+
 		Date startTime = Calendar.getInstance().getTime();
 		String crawlStorageFolder = "dump";
 		int numberOfCrawlers = 1000;
@@ -33,7 +37,7 @@ public class Controller {
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
 		config.setPolitenessDelay(300);
 		config.setResumableCrawling(false);
-//		config.setMaxPagesToFetch(10);
+		//		config.setMaxPagesToFetch(10);
 		config.setCrawlStorageFolder(crawlStorageFolder);
 
 		/*
@@ -43,7 +47,6 @@ public class Controller {
 		RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
 		RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
 		CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
-
 		/*
 		 * For each crawl, you need to add some seed urls. These are the first
 		 * URLs that are fetched and then the crawler starts following links
@@ -63,5 +66,73 @@ public class Controller {
 		Date endTime = Calendar.getInstance().getTime();
 		System.out.println("The program took a total of : " + (endTime.getTime()-startTime.getTime()) + " seconds");
 		c.printEndResults(stopWords);
+	}
+
+	public static void updateIndex()
+	{
+		try {
+			Scanner s = new Scanner(new File("PreIndex.txt"));
+			Scanner s2 = new Scanner(new File("Index.txt"));
+			HashMap<String, ArrayList<Frequency>> preIndex = new HashMap<String, ArrayList<Frequency>>();
+			HashMap<String, ArrayList<Frequency>> index = new HashMap<String, ArrayList<Frequency>>();
+
+			//import index into memory
+			while(s.hasNextLine())
+			{	
+				Scanner line = new Scanner(s.nextLine());
+				String key = line.next();
+				while(line.hasNext())
+				{
+					String url = line.next();
+					int value = line.nextInt();
+					if(index.containsKey(key))
+					{
+						ArrayList<Frequency> al = index.get(key);
+						al.add(new Frequency(url, value));
+					}
+					else
+					{
+						ArrayList<Frequency> al = new ArrayList<Frequency>();
+						al.add(new Frequency(url, value));
+						index.put(key, al);
+					}
+
+					//index.put(key, valu)
+				}
+				line.close();
+			}
+
+			//import preindex and place into index
+			while(s.hasNextLine())
+			{	
+				Scanner line = new Scanner(s.nextLine());
+				String url = line.next();
+				while(line.hasNext())
+				{
+					String key = line.next();
+					int value = line.nextInt();
+					if(index.containsKey(key))
+					{
+						ArrayList<Frequency> al = index.get(key);
+						al.add(new Frequency(url, value));
+					}
+					else
+					{
+						ArrayList<Frequency> al = new ArrayList<Frequency>();
+						al.add(new Frequency(url, value));
+						index.put(key, al);
+					}
+					//index.put(key, valu)
+
+				}
+				line.close();
+			}
+			
+			s.close();
+			s2.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 }
