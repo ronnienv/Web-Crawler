@@ -57,11 +57,11 @@ public class Controller {
 		 * Start the crawl. This is a blocking operation, meaning that your code
 		 * will reach the line after this only when crawling is finished.
 		 */
-		MyCrawler mc = new MyCrawler();
-		controller.start(mc.getClass(), numberOfCrawlers);    
+		Crawler c = new Crawler();
+		controller.start(c.getClass(), numberOfCrawlers);    
 
 		Date endTime = Calendar.getInstance().getTime();
 		System.out.println("The program took a total of : " + (endTime.getTime()-startTime.getTime()) + " seconds");
-		mc.printEndResults(stopWords);
+		c.printEndResults(stopWords);
 	}
 }
