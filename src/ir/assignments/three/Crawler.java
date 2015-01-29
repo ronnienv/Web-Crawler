@@ -51,8 +51,40 @@ public class Crawler extends WebCrawler {
 	public void visit(Page page) {
 
 		pageNumber++;
-		if((pageNumber % 250) == 0)
-			System.out.println("Page number: " + pageNumber);
+		
+		//if we have hit an increment of 250 pages, print out the current state
+		//so we can run from where we left off later
+		if((pageNumber % 25) == 0){
+			PrintWriter pw = null;
+			System.out.println("hello father!");
+			try {
+				//output the queue of urls to travel to file
+//				pw = new PrintWriter(new File("queue.txt"));
+//				pw.print("");
+//				for(String url: URLList.keySet()){
+//					pw.write(url+ "\n");
+//				}
+//				pw.close();
+				
+				//output subdomains visited to file
+				pw = new PrintWriter(new File("subdomains.txt"));
+				for(String subdomain: subdomains.keySet()){
+					pw.write(subdomain+ "\n");
+				}
+				pw.close();
+				
+				//output visited pages in file
+				pw = new PrintWriter(new File("visited.txt"));
+				for(String url: URLList.keySet()){
+					pw.write(url+ "\n");
+				}
+				pw.close();
+				
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+
+			}
+		}
 		String url = page.getWebURL().getURL();
 
 		System.out.println("URL: " + url);
