@@ -4,6 +4,7 @@ import ir.assignments.two.a.Frequency;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,7 +32,7 @@ public class Controller {
 
 		Date startTime = Calendar.getInstance().getTime();
 		String crawlStorageFolder = "dump";
-		int numberOfCrawlers = 1000;
+		int numberOfCrawlers = 100;
 
 		CrawlConfig config = new CrawlConfig();
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
@@ -62,7 +63,7 @@ public class Controller {
 		 */
 		Crawler c = new Crawler();
 		controller.start(c.getClass(), numberOfCrawlers);    
-
+		
 		Date endTime = Calendar.getInstance().getTime();
 		System.out.println("The program took a total of : " + (endTime.getTime()-startTime.getTime()) + " seconds");
 		c.printEndResults(stopWords);
