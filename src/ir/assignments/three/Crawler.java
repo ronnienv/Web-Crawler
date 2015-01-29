@@ -21,6 +21,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 
 public class Crawler extends WebCrawler {
 
+	private final static HashMap<String, Integer> seeds = new HashMap<String, Integer>();
 	private final static HashMap<String, Integer> URLList = new HashMap<String, Integer>();
 	private final static HashMap<String, Integer> subdomains = new HashMap<String, Integer>();
 	private final static HashMap<String, Integer> totalTokenList = new HashMap<String, Integer>();
@@ -50,6 +51,7 @@ public class Crawler extends WebCrawler {
 	@Override
 	public void visit(Page page) {
 
+		seeds.remove(page.toString());
 		pageNumber++;
 		
 		//if we have hit an increment of 250 pages, print out the current state
@@ -58,13 +60,14 @@ public class Crawler extends WebCrawler {
 			PrintWriter pw = null;
 			System.out.println("hello father!");
 			try {
+				
 				//output the queue of urls to travel to file
-//				pw = new PrintWriter(new File("queue.txt"));
-//				pw.print("");
-//				for(String url: URLList.keySet()){
-//					pw.write(url+ "\n");
-//				}
-//				pw.close();
+				pw = new PrintWriter(new File("queue.txt"));
+				pw.print("");
+				for(String url: seeds.keySet()){
+					pw.write(url+ "\n");
+				}
+				pw.close();
 				
 				//output subdomains visited to file
 				pw = new PrintWriter(new File("subdomains.txt"));
@@ -100,7 +103,7 @@ public class Crawler extends WebCrawler {
 		}
 		String url = page.getWebURL().getURL();
 
-		System.out.println("URL: " + url);
+//		System.out.println("URL: " + url);
 		
 		String subdomain = getSubdomain(url);
 		if(!subdomain.isEmpty())
@@ -119,6 +122,10 @@ public class Crawler extends WebCrawler {
 
 			List<WebURL> links = htmlParseData.getOutgoingUrls();
 			
+			for(WebURL link: links){
+				seeds.put(link.toString(), 1);
+			}
+			
 			ArrayList<String> tokenList = Utilities.tokenizeString(text);
 			int wordsOnPage= tokenList.size();
 			URLList.put(url, wordsOnPage);
@@ -134,7 +141,7 @@ public class Crawler extends WebCrawler {
 					value += totalTokenList.get(f.getText());
 				totalTokenList.put(f.getText(), value);
 			}
-			System.out.println(totalTokenList);
+//			System.out.println(totalTokenList);
 			
 			//maps token list to individual URL
 			urlMapper.put(url, (ArrayList<Frequency>) currentTokens);
@@ -160,7 +167,7 @@ public class Crawler extends WebCrawler {
 	}
 
 	public void printEndResults(HashMap<String, Integer> stopWords) {
-		System.out.println("Number of unique pages: " + URLList.size());
+//		System.out.println("Number of unique pages: " + URLList.size());
 
 		int max = 0;
 		String maxKey = "";

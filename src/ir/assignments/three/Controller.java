@@ -63,7 +63,7 @@ public class Controller {
 		 */
 		Crawler c = new Crawler();
 		controller.start(c.getClass(), numberOfCrawlers);    
-
+		
 		Date endTime = Calendar.getInstance().getTime();
 		System.out.println("The program took a total of : " + (endTime.getTime()-startTime.getTime()) + " seconds");
 		updateIndex();
