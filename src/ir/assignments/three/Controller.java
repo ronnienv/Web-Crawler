@@ -78,7 +78,7 @@ public class Controller {
 		Date endTime = Calendar.getInstance().getTime();
 		System.out.println("The program took a total of : " + (endTime.getTime()-startTime.getTime()) + " seconds");
 		updateIndex();
-		c.printEndResults(stopWords);
+		//c.printEndResults(stopWords);
 	}
 
 	public static void updateIndex()

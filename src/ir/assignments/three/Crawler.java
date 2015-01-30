@@ -40,6 +40,8 @@ public class Crawler extends WebCrawler {
 	@Override
 	public boolean shouldVisit(WebURL url) {
 		
+		System.out.println(url.getURL());
+		
 		if(pageNumber == 0)
 		{
 			try {
@@ -64,7 +66,6 @@ public class Crawler extends WebCrawler {
 	 */
 	@Override
 	public void visit(Page page) {
-		
 		seeds.remove(page.toString());
 		pageNumber++;
 		
@@ -117,7 +118,7 @@ public class Crawler extends WebCrawler {
 		}
 		String url = page.getWebURL().getURL();
 
-//		System.out.println("URL: " + url);
+		System.out.println("URL: " + url);
 		
 		String subdomain = getSubdomain(url);
 		if(!subdomain.isEmpty())
