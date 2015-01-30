@@ -39,26 +39,13 @@ public class Crawler extends WebCrawler {
 	 */
 	@Override
 	public boolean shouldVisit(WebURL url) {
-		
-		System.out.println(url.getURL());
+
+		//		System.out.println(url.getURL());
 		seeds.remove(url.toString());
 
-		
-		if(pageNumber == 0)
-		{
-			try {
-				Scanner s = new Scanner(new File("visited.txt"));
-				while(s.hasNextLine())
-					URLList.put(s.next(), s.nextInt());
-				s.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-		
 		String href = url.getURL().toLowerCase();
 		boolean URLExists = URLList.containsKey(href);
-		
+
 		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists && !href.contains("calendar.ics.uci.edu/") && !href.contains("?=") 
 				&& !href.contains("ftp") && !href.contains("fano"); 
 	}
@@ -69,16 +56,18 @@ public class Crawler extends WebCrawler {
 	 */
 	@Override
 	public void visit(Page page) {
-
+		System.out.println(page.getWebURL().getURL());
+		if(URLList.containsKey(page.getWebURL().getURL()))
+			return;
 		pageNumber++;
-		
+
 		//if we have hit an increment of 25 pages, print out the current state
 		//so we can run from where we left off later
-		if((pageNumber % 25) == 0){
+		if((pageNumber % 5) == 0){
 			PrintWriter pw = null;
 			System.out.println("hello father!");
 			try {
-				
+
 				//output the queue of urls to travel to file
 				pw = new PrintWriter(new File("queue.txt"));
 				pw.print("");
@@ -86,21 +75,21 @@ public class Crawler extends WebCrawler {
 					pw.write(url+ "\n");
 				}
 				pw.close();
-				
+
 				//output subdomains visited to file
 				pw = new PrintWriter(new File("subdomains.txt"));
 				for(String subdomain: subdomains.keySet()){
 					pw.write(subdomain+ " " + subdomains.get(subdomain) + "\n");
 				}
 				pw.close();
-				
+
 				//output visited pages in file
 				pw = new PrintWriter(new File("visited.txt"));
 				for(String url: URLList.keySet()){
 					pw.write(url+ " " + URLList.get(url) + "\n");
 				}
 				pw.close();
-				
+
 				//output urlMapper to preindex
 				pw = new PrintWriter(new File("PreIndex.txt"));
 				for(String key: urlMapper.keySet()){
@@ -113,7 +102,7 @@ public class Crawler extends WebCrawler {
 					pw.write("\n");
 				}
 				pw.close();
-				
+
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 
@@ -122,7 +111,7 @@ public class Crawler extends WebCrawler {
 		String url = page.getWebURL().getURL();
 
 		System.out.println("URL: " + url);
-		
+
 		String subdomain = getSubdomain(url);
 		if(!subdomain.isEmpty())
 		{
@@ -139,18 +128,18 @@ public class Crawler extends WebCrawler {
 			String html = htmlParseData.getHtml();
 
 			List<WebURL> links = htmlParseData.getOutgoingUrls();
-			
+
 			for(WebURL link: links){
 				seeds.put(link.toString(), 1);
 			}
-			
+
 			ArrayList<String> tokenList = Utilities.tokenizeString(text);
 			int wordsOnPage= tokenList.size();
 			URLList.put(url, wordsOnPage);
 
 			//add all tokens to master token list
 			List<Frequency> currentTokens = WordFrequencyCounter.computeWordFrequencies(tokenList);
-			
+
 			for(int i = 0; i < currentTokens.size(); i++)
 			{
 				Frequency f = currentTokens.get(i);
@@ -159,8 +148,8 @@ public class Crawler extends WebCrawler {
 					value += totalTokenList.get(f.getText());
 				totalTokenList.put(f.getText(), value);
 			}
-//			System.out.println(totalTokenList);
-			
+			//			System.out.println(totalTokenList);
+
 			//maps token list to individual URL
 			urlMapper.put(url, (ArrayList<Frequency>) currentTokens);
 			//                    System.out.println("Text length: " + text.length());
@@ -169,6 +158,24 @@ public class Crawler extends WebCrawler {
 			//			System.out.println("Number of outgoing links: " + links.size());
 
 		}
+	}
+
+	public void loadData()
+	{
+		try {
+
+			Scanner s = new Scanner(new File("visited.txt"));
+
+			while(s.hasNext())
+			{
+				URLList.put(s.next(), s.nextInt());
+			}
+			System.out.println("Loaded!");
+			s.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public String getSubdomain(String URL)
@@ -185,7 +192,7 @@ public class Crawler extends WebCrawler {
 	}
 
 	public void printEndResults(HashMap<String, Integer> stopWords) {
-//		System.out.println("Number of unique pages: " + URLList.size());
+		//		System.out.println("Number of unique pages: " + URLList.size());
 
 		int max = 0;
 		String maxKey = "";

@@ -32,7 +32,7 @@ public class Controller {
 
 		Date startTime = Calendar.getInstance().getTime();
 		String crawlStorageFolder = "dump";
-		int numberOfCrawlers = 100;
+		int numberOfCrawlers = 10;
 
 		CrawlConfig config = new CrawlConfig();
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
@@ -73,6 +73,7 @@ public class Controller {
 		 * will reach the line after this only when crawling is finished.
 		 */
 		Crawler c = new Crawler();
+		c.loadData();
 		controller.start(c.getClass(), numberOfCrawlers);    
 		
 		Date endTime = Calendar.getInstance().getTime();
