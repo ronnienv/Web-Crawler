@@ -53,6 +53,15 @@ public class Crawler extends WebCrawler {
 				&& !href.contains("ftp") && !href.contains("fano"); 
 	}
 
+	public boolean shouldVisit(String url){
+		String href = url.toLowerCase();
+		boolean URLExists = URLList.containsKey(href);
+
+		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists && !href.contains("calendar.ics.uci.edu/") && !href.contains("?=") 
+				&& !href.contains("ftp") && !href.contains("fano"); 
+	}
+	
+	
 	/**
 	 * This function is called when a page is fetched and ready 
 	 * to be processed by your program.
@@ -62,10 +71,16 @@ public class Crawler extends WebCrawler {
 
 		if(!shouldVisit(page.getWebURL()))
 			return;
-
-		String url = page.getWebURL().getURL();
-
-		System.out.println("URL: " + url);
+		
+		String url = page.getWebURL().getURL().toLowerCase();
+		
+		pageNumber++;
+		
+		if(pageNumber % 500 == 0)
+		{
+			System.out.println(pageNumber + " URL: " + url);
+			
+		}
 
 		String subdomain = getSubdomain(url);
 		if(!subdomain.isEmpty())

@@ -34,13 +34,13 @@ public class Controller {
 
 		Date startTime = Calendar.getInstance().getTime();
 		String crawlStorageFolder = "dump";
-		int numberOfCrawlers = 10;
+		int numberOfCrawlers = 100;
 
 		CrawlConfig config = new CrawlConfig();
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
 		config.setPolitenessDelay(300);
 		config.setResumableCrawling(false);
-		config.setMaxPagesToFetch(50);
+		config.setMaxPagesToFetch(5000);
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		/*
 		 * Instantiate the controller for this crawl.
@@ -56,13 +56,17 @@ public class Controller {
 		 */
 		//            controller.addSeed("http://www.ics.uci.edu/~welling/");
 		//            controller.addSeed("http://www.ics.uci.edu/~lopes/");
-		
-		
-//		controller.addSeed("http://www.ics.uci.edu/");
+		Crawler c = new Crawler();
+		c.loadData();
+		//		controller.addSeed("http://www.ics.uci.edu/");
 		try {
 			s = new Scanner(new File("queue.txt"));
 			while(s.hasNext())
-				controller.addSeed(s.next().trim());
+			{
+				String url = s.next();
+				if(c.shouldVisit(url))
+					controller.addSeed(url.trim());
+			}
 			s.close();
 		}
 		catch(Exception e)
@@ -73,16 +77,15 @@ public class Controller {
 		 * Start the crawl. This is a blocking operation, meaning that your code
 		 * will reach the line after this only when crawling is finished.
 		 */
-		Crawler c = new Crawler();
-		c.loadData();
+
 		controller.start(c.getClass(), numberOfCrawlers);   
 		c.printToFile();
-		
+
 		Date endTime = Calendar.getInstance().getTime();
 		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("metadata.txt", true)));
 		pw.write(endTime.getTime() + " " + startTime.getTime() + " ");
 		pw.close();
-		System.out.println("The program took a total of : " + (endTime.getTime()-startTime.getTime()) + " seconds");
+		System.out.println("The program took a total of : " + (endTime.getTime()-startTime.getTime())/1000/60 + " minutes");
 		updateIndex();
 		//c.printEndResults(stopWords);
 	}
@@ -160,7 +163,7 @@ public class Controller {
 				pw.write("\n");
 			}
 			pw.close();
-			
+
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

@@ -1,10 +1,4 @@
 
 .classpath
 
-CommonWords.txt
-
-Subdomains.txt
-
 dump/frontier/00000000.jdb
-
-Index.txt
