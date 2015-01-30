@@ -54,6 +54,9 @@ public class Crawler extends WebCrawler {
 	}
 
 	public boolean shouldVisit(String url){
+		
+		seeds.remove(url.toString());
+		
 		String href = url.toLowerCase();
 		boolean URLExists = URLList.containsKey(href);
 

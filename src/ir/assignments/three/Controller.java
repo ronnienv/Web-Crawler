@@ -40,7 +40,7 @@ public class Controller {
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
 		config.setPolitenessDelay(300);
 		config.setResumableCrawling(false);
-		config.setMaxPagesToFetch(5000);
+		config.setMaxPagesToFetch(20);
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		/*
 		 * Instantiate the controller for this crawl.
