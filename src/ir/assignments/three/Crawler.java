@@ -41,6 +41,8 @@ public class Crawler extends WebCrawler {
 	public boolean shouldVisit(WebURL url) {
 		
 		System.out.println(url.getURL());
+		seeds.remove(url.toString());
+
 		
 		if(pageNumber == 0)
 		{
@@ -56,6 +58,7 @@ public class Crawler extends WebCrawler {
 		
 		String href = url.getURL().toLowerCase();
 		boolean URLExists = URLList.containsKey(href);
+		
 		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists && !href.contains("calendar.ics.uci.edu/") && !href.contains("?=") 
 				&& !href.contains("ftp") && !href.contains("fano"); 
 	}
@@ -66,7 +69,7 @@ public class Crawler extends WebCrawler {
 	 */
 	@Override
 	public void visit(Page page) {
-		seeds.remove(page.toString());
+
 		pageNumber++;
 		
 		//if we have hit an increment of 25 pages, print out the current state
