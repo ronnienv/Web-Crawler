@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import edu.uci.ics.crawler4j.crawler.Page;
@@ -38,6 +39,19 @@ public class Crawler extends WebCrawler {
 	 */
 	@Override
 	public boolean shouldVisit(WebURL url) {
+		
+		if(pageNumber == 0)
+		{
+			try {
+				Scanner s = new Scanner(new File("visited.txt"));
+				while(s.hasNextLine())
+					URLList.put(s.next(), s.nextInt());
+				s.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		String href = url.getURL().toLowerCase();
 		boolean URLExists = URLList.containsKey(href);
 		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists && !href.contains("calendar.ics.uci.edu/") && !href.contains("?=") 
@@ -50,11 +64,11 @@ public class Crawler extends WebCrawler {
 	 */
 	@Override
 	public void visit(Page page) {
-
+		
 		seeds.remove(page.toString());
 		pageNumber++;
 		
-		//if we have hit an increment of 250 pages, print out the current state
+		//if we have hit an increment of 25 pages, print out the current state
 		//so we can run from where we left off later
 		if((pageNumber % 25) == 0){
 			PrintWriter pw = null;
@@ -72,14 +86,14 @@ public class Crawler extends WebCrawler {
 				//output subdomains visited to file
 				pw = new PrintWriter(new File("subdomains.txt"));
 				for(String subdomain: subdomains.keySet()){
-					pw.write(subdomain+ "\n");
+					pw.write(subdomain+ " " + subdomains.get(subdomain) + "\n");
 				}
 				pw.close();
 				
 				//output visited pages in file
 				pw = new PrintWriter(new File("visited.txt"));
 				for(String url: URLList.keySet()){
-					pw.write(url+ "\n");
+					pw.write(url+ " " + URLList.get(url) + "\n");
 				}
 				pw.close();
 				

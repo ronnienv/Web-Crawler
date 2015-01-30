@@ -36,7 +36,7 @@ public class Controller {
 
 		CrawlConfig config = new CrawlConfig();
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
-		config.setPolitenessDelay(300);
+		config.setPolitenessDelay(3000);
 		config.setResumableCrawling(false);
 		config.setMaxPagesToFetch(30);
 		config.setCrawlStorageFolder(crawlStorageFolder);
@@ -55,8 +55,19 @@ public class Controller {
 		 */
 		//            controller.addSeed("http://www.ics.uci.edu/~welling/");
 		//            controller.addSeed("http://www.ics.uci.edu/~lopes/");
-		controller.addSeed("http://www.ics.uci.edu/");
 		
+		
+		controller.addSeed("http://www.ics.uci.edu/");
+//		try {
+//			s = new Scanner(new File("queue.txt"));
+//			while(s.hasNextLine())
+//				controller.addSeed(s.nextLine().trim());
+//			s.close();
+//		}
+//		catch(Exception e)
+//		{
+//			e.printStackTrace();
+//		}
 		/*
 		 * Start the crawl. This is a blocking operation, meaning that your code
 		 * will reach the line after this only when crawling is finished.

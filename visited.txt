@@ -1,51 +1,24 @@
-<<<<<<< HEAD
-http://www.ics.uci.edu/grad/degrees/degrees_MSOverview
-http://www.ics.uci.edu/
-http://www.ics.uci.edu/grad/forms/index
-http://www.ics.uci.edu/about/visit/index.php
-http://www.ics.uci.edu/grad/courses/index
-http://www.ics.uci.edu/about/about_contact.php
-http://www.ics.uci.edu/about/about_deanmsg.php
-http://www.ics.uci.edu/about/about_factsfigures.php
-http://www.ics.uci.edu/dept/
-http://www.ics.uci.edu/grad/funding/index
-http://www.ics.uci.edu/faculty/centers/
-http://www.ics.uci.edu/about/equity/
-http://www.ics.uci.edu/faculty/area/
-http://www.ics.uci.edu/computing/account/new
-http://www.ics.uci.edu/grad/
-http://www.ics.uci.edu/grad/admissions/index
-http://www.ics.uci.edu/about/
-http://www.ics.uci.edu/about/brenhall/index.php
-http://www.ics.uci.edu/grad/policies/index
-http://www.ics.uci.edu/about/bren/
-http://www.ics.uci.edu/faculty/highlights/
-http://www.ics.uci.edu/grad/degrees/index
-http://www.ics.uci.edu/about/about_mission.php
-http://www.ics.uci.edu/grad/degrees/degrees_PhDOverview
-=======
-http://www.ics.uci.edu/about/bren/bren_advance.php
-http://www.ics.uci.edu/ugrad/sao/Appts_Walk-Ins.php
-http://www.ics.uci.edu/
-http://www.ics.uci.edu/involved/corporate_partner
-http://www.ics.uci.edu/about/bren/bren_about.php
-http://www.ics.uci.edu/ugrad/index.php
-http://www.ics.uci.edu/about/bren/bren_press.php
-http://www.ics.uci.edu/about/about_deanmsg.php
-http://www.ics.uci.edu/faculty/area/area_algorithms.php
-http://www.ics.uci.edu/involved/tech_talk.php
-http://www.ics.uci.edu/faculty/area/index.php
-http://www.ics.uci.edu/involved/information_session.php
-http://www.ics.uci.edu/about/bren/bren_vision.php
-http://www.ics.uci.edu/ugrad/sao/
-http://www.ics.uci.edu/involved/internship
-http://www.ics.uci.edu/involved/information_session
-http://www.ics.uci.edu/involved/project_class
-http://www.ics.uci.edu/about/
-http://www.ics.uci.edu/involved/leadership_council
-http://www.ics.uci.edu/about/bren/index.php
-http://www.ics.uci.edu/faculty/profiles/view_faculty.php?ucinetid=mbdillen
-http://www.ics.uci.edu/grad/index.php
-http://www.ics.uci.edu/about/about_mission.php
-http://www.ics.uci.edu/ugrad/sao/index.php
->>>>>>> FETCH_HEAD
+http://www.ics.uci.edu/grad/degrees/index.php 271
+http://www.ics.uci.edu/grad/degrees/degrees_MSOverview 658
+http://www.ics.uci.edu/about/visit/index.php 385
+http://www.ics.uci.edu/about/bren/bren_about.php 1003
+http://www.ics.uci.edu/grad/courses/index 328
+http://www.ics.uci.edu/grad/courses/index.php 328
+http://www.ics.uci.edu/community/friends/leadershipcouncil/ 1405
+http://www.ics.uci.edu/grad/policies/index.php 285
+http://www.ics.uci.edu/about/bren/bren_press.php 402
+http://www.ics.uci.edu/about/videos/index.php 336
+http://www.ics.uci.edu/faculty/area/area_cscw.php 229
+http://www.ics.uci.edu/grad/degrees/degrees_PhDOverview.php 753
+http://www.ics.uci.edu/involved/internship 444
+http://www.ics.uci.edu/community/news/notes/ 8068
+http://www.ics.uci.edu/faculty/area/area_network.php 346
+http://www.ics.uci.edu/faculty/profiles/view_faculty.php?ucinetid=dhirschb 230
+http://www.ics.uci.edu/faculty/area/area_multimedia.php 220
+http://www.ics.uci.edu/about/bren/gallery/gallery_02_jpg.php 208
+http://www.ics.uci.edu/faculty/profiles/view_faculty.php?ucinetid=eppstein 241
+http://www.ics.uci.edu/about/bren/gallery/gallery_14_jpg.php 210
+http://www.ics.uci.edu/ugrad/policies/Withdrawal_Readmission 645
+http://www.ics.uci.edu/faculty/area/area_medical.php 239
+http://www.ics.uci.edu/about/search/index.php 245
+http://www.ics.uci.edu/grad/degrees/degrees_PhDOverview 753
