@@ -4,8 +4,11 @@ import ir.assignments.two.a.Frequency;
 import ir.assignments.two.a.Utilities;
 import ir.assignments.two.b.WordFrequencyCounter;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +34,7 @@ public class Crawler extends WebCrawler {
 			+ "|png|tiff?|mid|mp2|mp3|mp4"
 			+ "|wav|avi|mov|mpeg|ram|m4v|pdf|ppt|pptx" 
 			+ "|rm|smil|wmv|swf|wma|zip|rar|gz))$");
-	private static int pageNumber = 0;
+	private static int pageNumber = 1;
 	/**
 	 * You should implement this function to specify whether
 	 * the given url should be crawled or not (based on your
@@ -56,58 +59,10 @@ public class Crawler extends WebCrawler {
 	 */
 	@Override
 	public void visit(Page page) {
-		System.out.println(page.getWebURL().getURL());
-		if(URLList.containsKey(page.getWebURL().getURL()))
+
+		if(!shouldVisit(page.getWebURL()))
 			return;
-		pageNumber++;
 
-		//if we have hit an increment of 25 pages, print out the current state
-		//so we can run from where we left off later
-		if((pageNumber % 5) == 0){
-			PrintWriter pw = null;
-			System.out.println("hello father!");
-			try {
-
-				//output the queue of urls to travel to file
-				pw = new PrintWriter(new File("queue.txt"));
-				pw.print("");
-				for(String url: seeds.keySet()){
-					pw.write(url+ "\n");
-				}
-				pw.close();
-
-				//output subdomains visited to file
-				pw = new PrintWriter(new File("subdomains.txt"));
-				for(String subdomain: subdomains.keySet()){
-					pw.write(subdomain+ " " + subdomains.get(subdomain) + "\n");
-				}
-				pw.close();
-
-				//output visited pages in file
-				pw = new PrintWriter(new File("visited.txt"));
-				for(String url: URLList.keySet()){
-					pw.write(url+ " " + URLList.get(url) + "\n");
-				}
-				pw.close();
-
-				//output urlMapper to preindex
-				pw = new PrintWriter(new File("PreIndex.txt"));
-				for(String key: urlMapper.keySet()){
-					pw.write(key);
-					ArrayList<Frequency> al = urlMapper.get(key);
-					for(Frequency f : al)
-					{
-						pw.write(" " + f.getText() + " " + f.getFrequency());
-					}
-					pw.write("\n");
-				}
-				pw.close();
-
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-
-			}
-		}
 		String url = page.getWebURL().getURL();
 
 		System.out.println("URL: " + url);
@@ -160,6 +115,58 @@ public class Crawler extends WebCrawler {
 		}
 	}
 
+	public void printToFile()
+	{
+		System.out.println("Printing to files");
+		//if we have hit an increment of 25 pages, print out the current state
+		//so we can run from where we left off later
+		PrintWriter pw = null;
+		try {
+
+			//output the queue of urls to travel to file
+			pw = new PrintWriter(new File("queue.txt"));
+			pw.print("");
+			for(String url: seeds.keySet()){
+				pw.write(url+ "\n");
+			}
+			pw.close();
+
+			//output subdomains visited to file
+			pw = new PrintWriter(new File("PreSubdomains.txt"));
+			for(String subdomain: subdomains.keySet()){
+				pw.write(subdomain+ " " + subdomains.get(subdomain) + "\n");
+			}
+			pw.close();
+
+			//output visited pages in file
+			pw = new PrintWriter(new File("visited.txt"));
+			for(String url: URLList.keySet()){
+				pw.write(url+ " " + URLList.get(url) + "\n");
+			}
+			pw.close();
+
+			//output urlMapper to preindex
+			pw = new PrintWriter(new BufferedWriter(new FileWriter("PreIndex.txt", true)));
+			for(String key: urlMapper.keySet()){
+				pw.write(key);
+				ArrayList<Frequency> al = urlMapper.get(key);
+				for(Frequency f : al)
+				{
+					pw.write(" " + f.getText() + " " + f.getFrequency());
+				}
+				pw.write("\n");
+			}
+			pw.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Done printing to files");
+	}
+
 	public void loadData()
 	{
 		try {
@@ -170,8 +177,19 @@ public class Crawler extends WebCrawler {
 			{
 				URLList.put(s.next(), s.nextInt());
 			}
-			System.out.println("Loaded!");
+
 			s.close();
+
+			s = new Scanner(new File("PreSubdomains.txt"));
+
+			while(s.hasNext())
+			{
+				subdomains.put(s.next(), s.nextInt());
+			}
+
+			s.close();
+
+			System.out.println("Loaded!");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

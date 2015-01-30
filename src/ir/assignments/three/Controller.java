@@ -2,8 +2,10 @@ package ir.assignments.three;
 
 import ir.assignments.two.a.Frequency;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,11 +38,10 @@ public class Controller {
 
 		CrawlConfig config = new CrawlConfig();
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
-		config.setPolitenessDelay(3000);
+		config.setPolitenessDelay(300);
 		config.setResumableCrawling(false);
-		config.setMaxPagesToFetch(30);
+		config.setMaxPagesToFetch(50);
 		config.setCrawlStorageFolder(crawlStorageFolder);
-
 		/*
 		 * Instantiate the controller for this crawl.
 		 */
@@ -57,26 +58,30 @@ public class Controller {
 		//            controller.addSeed("http://www.ics.uci.edu/~lopes/");
 		
 		
-		controller.addSeed("http://www.ics.uci.edu/");
-//		try {
-//			s = new Scanner(new File("queue.txt"));
-//			while(s.hasNextLine())
-//				controller.addSeed(s.nextLine().trim());
-//			s.close();
-//		}
-//		catch(Exception e)
-//		{
-//			e.printStackTrace();
-//		}
+//		controller.addSeed("http://www.ics.uci.edu/");
+		try {
+			s = new Scanner(new File("queue.txt"));
+			while(s.hasNext())
+				controller.addSeed(s.next().trim());
+			s.close();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 		/*
 		 * Start the crawl. This is a blocking operation, meaning that your code
 		 * will reach the line after this only when crawling is finished.
 		 */
 		Crawler c = new Crawler();
 		c.loadData();
-		controller.start(c.getClass(), numberOfCrawlers);    
+		controller.start(c.getClass(), numberOfCrawlers);   
+		c.printToFile();
 		
 		Date endTime = Calendar.getInstance().getTime();
+		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("metadata.txt", true)));
+		pw.write(endTime.getTime() + " " + startTime.getTime() + " ");
+		pw.close();
 		System.out.println("The program took a total of : " + (endTime.getTime()-startTime.getTime()) + " seconds");
 		updateIndex();
 		//c.printEndResults(stopWords);

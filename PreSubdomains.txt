@@ -1,0 +1,10 @@
+http://vision.ics.uci.edu/ 2
+http://alumni.ics.uci.edu/ 1
+http://graphics.ics.uci.edu/ 1
+http://-netra.ics.uci.edu/ 1
+http://cml.ics.uci.edu/ 1
+http://asterix.ics.uci.edu/ 2
+http://hci.ics.uci.edu/ 1
+http://sconce.ics.uci.edu/ 1
+http://sdcl.ics.uci.edu/ 23
+http://mondego.ics.uci.edu/ 1
