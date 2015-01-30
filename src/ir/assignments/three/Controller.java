@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -22,6 +23,12 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 public class Controller {
 	public static void main(String[] args) throws Exception {
 
+		if(true)
+		{
+			printResults();
+			return;
+		}
+		
 		//gets stop words from file for later use
 		HashMap<String, Integer> stopWords = new HashMap<String, Integer>();
 		Scanner s = new Scanner(new File("StopWords.txt"));
@@ -88,6 +95,71 @@ public class Controller {
 		System.out.println("The program took a total of : " + (endTime.getTime()-startTime.getTime())/1000/60 + " minutes");
 		updateIndex();
 		//c.printEndResults(stopWords);
+	}
+	
+	public static void printResults()
+	{
+		try {
+			//calculates total time taken
+			Scanner s = new Scanner(new File("metadata.txt"));
+			double sum = 0;
+			while(s.hasNext())
+			{
+				sum += (s.nextLong() - s.nextLong());
+			}
+			s.close();
+			System.out.println("The total time it took was " + sum/1000/60/60 + " hours");
+			
+			//finds url with the most words
+			s = new Scanner(new File("visited.txt"));
+			String maxString = s.next();
+			int maxPages = s.nextInt();
+			
+			while(s.hasNext())
+			{
+				String tempString = s.next();
+				int tempMax = s.nextInt();
+				if(tempMax > maxPages)
+				{
+					maxString = tempString;
+					maxPages = tempMax;
+				}
+			}
+			
+
+			System.out.println("The page " + maxString + " has the most words with " + maxPages);
+			
+			//loads and sorts subdomains
+			s = new Scanner(new File("PreSubdomains.txt"));
+			HashMap<String, Integer> subdomains = new HashMap<String, Integer>();
+			ArrayList<String> al = new ArrayList<String>();
+			
+			//populate subdomains
+			while(s.hasNext())
+			{
+				String key = s.next();
+				subdomains.put(key, s.nextInt());
+				al.add(key);
+			}
+
+			String[] toSort = Arrays.copyOf(al.toArray(), al.size(), String[].class);
+			Arrays.sort(toSort);
+			PrintWriter pw = new PrintWriter("subdomains.txt");
+			for(String a: toSort)
+			{
+				pw.write(a + ", " + subdomains.get(a) + "\n");
+			}
+		
+			pw.close();
+
+			s.close();
+
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	public static void updateIndex()
