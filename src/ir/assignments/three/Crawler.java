@@ -49,7 +49,7 @@ public class Crawler extends WebCrawler {
 		String href = url.getURL().toLowerCase();
 		boolean URLExists = URLList.containsKey(href);
 
-		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists && !href.contains("calendar.ics.uci.edu/") && !href.contains("?=") 
+		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists && !href.contains("calendar.ics.uci.edu/") && !href.contains("?") 
 				&& !href.contains("ftp") && !href.contains("fano"); 
 	}
 
@@ -60,7 +60,7 @@ public class Crawler extends WebCrawler {
 		String href = url.toLowerCase();
 		boolean URLExists = URLList.containsKey(href);
 
-		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists && !href.contains("calendar.ics.uci.edu/") && !href.contains("?=") 
+		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists && !href.contains("calendar.ics.uci.edu/") && !href.contains("?") 
 				&& !href.contains("ftp") && !href.contains("fano"); 
 	}
 	
@@ -227,70 +227,72 @@ public class Crawler extends WebCrawler {
 		return s2[0];
 	}
 
-	public void printEndResults(HashMap<String, Integer> stopWords) {
-		//		System.out.println("Number of unique pages: " + URLList.size());
-
-		int max = 0;
-		String maxKey = "";
-		for(String s: URLList.keySet())
-		{
-			if(URLList.get(s) > max)
-			{
-				max = URLList.get(s);
-				maxKey = s;
-			}
-		}
-
-		System.out.println("The page : " + maxKey + " has the longest text size of " + max + " words");
-
-		System.out.println("There are " + subdomains.size() + " subdomains");
-
-		ArrayList<String> al = new ArrayList<String>();
-		for(String s: subdomains.keySet())
-		{
-			al.add(s);
-		}
-
-		String[] subdomainsPrint = Arrays.copyOf(al.toArray(), al.size(), String[].class);
-		Arrays.sort(subdomainsPrint);
-
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(new File("Subdomains.txt"));
-			for(int i = 0; i < subdomainsPrint.length; i++)
-			{
-				String subdomain = subdomainsPrint[i];
-				pw.write(subdomain + ", " + subdomains.get(subdomain) + "\n");
-			}
-			pw.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		PriorityQueue<Frequency> topWords = new PriorityQueue<Frequency>(totalTokenList.size(), WordFrequencyCounter.freqComparator);
-
-		//adds tokens to top 500 list if they aren't in the list of stop words
-		for(String s : totalTokenList.keySet())
-		{
-			//if the top word is > 1 character add it
-			if(!stopWords.containsKey(s) && s.length() > 1)
-				topWords.add(new Frequency(s,totalTokenList.get(s)));
-		}
-
-		try {
-			pw = new PrintWriter(new File("CommonWords.txt"));
-			for(int i = 500; i > 0 && !topWords.isEmpty(); i--)
-			{
-				pw.write(topWords.poll() + " \n");
-			}
-
-			pw.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-
-		}
-		//		System.out.println("The stop words are: " + stopWords.toString());
-
-
-	}
+//	public void printEndResults(HashMap<String, Integer> stopWords) {
+//
+//		//prints number of subdomains
+////		System.out.println("There are " + subdomains.size() + " subdomains");
+//
+//		//sorts the subdomains in alphabetical order
+//		ArrayList<String> al = new ArrayList<String>();
+//		for(String s: subdomains.keySet())
+//		{
+//			al.add(s);
+//		}
+//
+//		String[] subdomainsPrint = Arrays.copyOf(al.toArray(), al.size(), String[].class);
+//		Arrays.sort(subdomainsPrint);
+//
+//		//writes the subdomains in order onto the file
+//		PrintWriter pw = null;
+//		try {
+//			pw = new PrintWriter(new File("Subdomains.txt"));
+//			for(int i = 0; i < subdomainsPrint.length; i++)
+//			{
+//				String subdomain = subdomainsPrint[i];
+//				pw.write(subdomain + ", " + subdomains.get(subdomain) + "\n");
+//			}
+//			pw.close();
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//
+//		//prints out the top 500 words by number of occurrences
+//		PriorityQueue<Frequency> topWords = new PriorityQueue<Frequency>(totalTokenList.size(), WordFrequencyCounter.freqComparator);
+//
+//		
+//		pw = null;
+//		try {
+//			pw = new PrintWriter(new File("Subdomains.txt"));
+//			for(int i = 0; i < subdomainsPrint.length; i++)
+//			{
+//				String subdomain = subdomainsPrint[i];
+//				pw.write(subdomain + ", " + subdomains.get(subdomain) + "\n");
+//			}
+//			pw.close();
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		}
+//		//adds tokens to top 500 list if they aren't in the list of stop words
+//		for(String s : totalTokenList.keySet())
+//		{
+//			//if the top word is > 1 character add it
+//			if(!stopWords.containsKey(s) && s.length() > 1)
+//				topWords.add(new Frequency(s,totalTokenList.get(s)));
+//		}
+//
+//		try {
+//			pw = new PrintWriter(new File("CommonWords.txt"));
+//			for(int i = 500; i > 0 && !topWords.isEmpty(); i--)
+//			{
+//				pw.write(topWords.poll() + " \n");
+//			}
+//
+//			pw.close();
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//
+//		}
+//
+//
+//	}
 }

@@ -1,6 +1,7 @@
 package ir.assignments.three;
 
 import ir.assignments.two.a.Frequency;
+import ir.assignments.two.b.WordFrequencyCounter;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 import java.util.Scanner;
 
 import edu.uci.ics.crawler4j.crawler.CrawlConfig;
@@ -22,21 +24,13 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 
 public class Controller {
 	public static void main(String[] args) throws Exception {
-
-		if(true)
-		{
-			printResults();
-			return;
-		}
-		
-		//gets stop words from file for later use
-		HashMap<String, Integer> stopWords = new HashMap<String, Integer>();
-		Scanner s = new Scanner(new File("StopWords.txt"));
-		while(s.hasNext())
-		{
-			stopWords.put(s.nextLine(), 1);
-		}
-		s.close();
+		Scanner s = null;
+//		if(true)
+//		{
+//			printResults();
+//			return;
+//		}
+	
 		//		System.out.println(stopWords.toString());
 
 		Date startTime = Calendar.getInstance().getTime();
@@ -47,7 +41,7 @@ public class Controller {
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
 		config.setPolitenessDelay(300);
 		config.setResumableCrawling(false);
-		config.setMaxPagesToFetch(20);
+		config.setMaxPagesToFetch(60000);
 		config.setCrawlStorageFolder(crawlStorageFolder);
 		/*
 		 * Instantiate the controller for this crawl.
@@ -65,7 +59,7 @@ public class Controller {
 		//            controller.addSeed("http://www.ics.uci.edu/~lopes/");
 		Crawler c = new Crawler();
 		c.loadData();
-		//		controller.addSeed("http://www.ics.uci.edu/");
+//				controller.addSeed("http://www.ics.uci.edu/");
 		try {
 			s = new Scanner(new File("queue.txt"));
 			while(s.hasNext())
@@ -99,6 +93,9 @@ public class Controller {
 	
 	public static void printResults()
 	{
+		HashMap<String, Integer> stopWords = new HashMap<String, Integer>();
+		PrintWriter pw = null;
+		
 		try {
 			//calculates total time taken
 			Scanner s = new Scanner(new File("metadata.txt"));
@@ -125,9 +122,55 @@ public class Controller {
 					maxPages = tempMax;
 				}
 			}
-			
-
+		
 			System.out.println("The page " + maxString + " has the most words with " + maxPages);
+			
+			
+			//gets stop words from file for later use
+			s = new Scanner(new File("StopWords.txt"));
+			while(s.hasNext())
+			{
+				stopWords.put(s.nextLine(), 1);
+			}
+			s.close();
+			
+			//create priority queue for all words
+			PriorityQueue<Frequency> priorityQueue = new PriorityQueue<Frequency>(500, WordFrequencyCounter.freqComparator);
+			s = new Scanner (new File("Index.txt"));
+			HashMap<String, Integer> commonWords = new HashMap<String, Integer>();
+			
+			while(s.hasNextLine()){
+				String line = s.nextLine();
+				String[] splitLine = line.split(" ");
+				String word = splitLine[0];
+				int count = 0;
+				
+				//if word is appropriate length and not a stop word
+				//calculate its count and word doesn't have 
+				//a number in it, add it to the queue
+				if(word.length() > 1 && !stopWords.containsKey(word) &&
+						!word.matches("(.)*(\\d)(.)*")){
+					for(int i = 2; i <= splitLine.length-1; i+=2){
+						count += Integer.parseInt(splitLine[i]);
+					}
+					Frequency current = new Frequency(word, count);
+					priorityQueue.offer(current);
+				}
+			}
+			
+			//calculates 500 most occuring words
+			ArrayList<Frequency> topWords = new ArrayList<Frequency>();
+			for(int i = 0; i < 500; i++){
+				topWords.add(priorityQueue.poll());
+			}
+			
+			//write most common words to file
+			pw = new PrintWriter("CommonWords.txt");
+			for(Frequency word: topWords)
+			{
+				pw.write(word.getText() + ":" + word.getFrequency() + "\n");
+			}
+			pw.close();
 			
 			//loads and sorts subdomains
 			s = new Scanner(new File("PreSubdomains.txt"));
@@ -144,7 +187,7 @@ public class Controller {
 
 			String[] toSort = Arrays.copyOf(al.toArray(), al.size(), String[].class);
 			Arrays.sort(toSort);
-			PrintWriter pw = new PrintWriter("subdomains.txt");
+			pw = new PrintWriter("Subdomains.txt");
 			for(String a: toSort)
 			{
 				pw.write(a + ", " + subdomains.get(a) + "\n");
@@ -167,7 +210,6 @@ public class Controller {
 		try {
 			Scanner s = new Scanner(new File("PreIndex.txt"));
 			Scanner s2 = new Scanner(new File("Index.txt"));
-			HashMap<String, ArrayList<Frequency>> preIndex = new HashMap<String, ArrayList<Frequency>>();
 			HashMap<String, ArrayList<Frequency>> index = new HashMap<String, ArrayList<Frequency>>();
 
 			//import index into memory
@@ -190,8 +232,6 @@ public class Controller {
 						al.add(new Frequency(url, value));
 						index.put(key, al);
 					}
-
-					//index.put(key, valu)
 				}
 				line.close();
 			}
@@ -216,8 +256,6 @@ public class Controller {
 						al.add(new Frequency(url, value));
 						index.put(key, al);
 					}
-					//index.put(key, valu)
-
 				}
 				line.close();
 			}
