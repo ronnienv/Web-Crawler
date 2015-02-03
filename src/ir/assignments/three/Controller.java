@@ -1,7 +1,8 @@
 //Ronnie Nguyen 22768608
 //Jeffrey Fellows 34201703
 
-//basic for gotten from the example on https://code.google.com/p/crawler4j/
+//basic template for controller gotten from the example on: 
+//https://code.google.com/p/crawler4j/
 
 package ir.assignments.three;
 
