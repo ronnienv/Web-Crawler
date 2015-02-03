@@ -43,28 +43,30 @@ public class Crawler extends WebCrawler {
 	@Override
 	public boolean shouldVisit(WebURL url) {
 
-		//		System.out.println(url.getURL());
+		//this list is a user defined list that is imported and exported
 		seeds.remove(url.toString());
 
 		String href = url.getURL().toLowerCase();
 		boolean URLExists = URLList.containsKey(href);
 
+		//add traps to this list as we come across them
 		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists && !href.contains("calendar.ics.uci.edu/") && !href.contains("?") 
 				&& !href.contains("ftp") && !href.contains("fano"); 
 	}
 
+	//this method is similar to above, but takes a string instead of weburl
 	public boolean shouldVisit(String url){
-		
+
 		seeds.remove(url.toString());
-		
+
 		String href = url.toLowerCase();
 		boolean URLExists = URLList.containsKey(href);
 
 		return !FILTERS.matcher(href).matches() && href.contains(".ics.uci.edu/") && !URLExists && !href.contains("calendar.ics.uci.edu/") && !href.contains("?") 
 				&& !href.contains("ftp") && !href.contains("fano"); 
 	}
-	
-	
+
+
 	/**
 	 * This function is called when a page is fetched and ready 
 	 * to be processed by your program.
@@ -72,22 +74,28 @@ public class Crawler extends WebCrawler {
 	@Override
 	public void visit(Page page) {
 
+		//when we stop and restart the crawler, we add new seeds which don't seem to go through the
+		//shouldVisist method.
+		//This part is here to make sure they go through it no matter what.
 		if(!shouldVisit(page.getWebURL()))
 			return;
-		
+
 		String url = page.getWebURL().getURL().toLowerCase();
-		
+
+		//used for logging purposes to make sure it's still working/not in any traps
 		pageNumber++;
-		
+
 		if(pageNumber % 500 == 0)
 		{
 			System.out.println(pageNumber + " URL: " + url);
-			
+
 		}
 
+		//determines if given url is part of a subdomain and updates corresponding list to reflect if it is
 		String subdomain = getSubdomain(url);
 		if(!subdomain.isEmpty())
 		{
+			//recreates subdomain with entire domain for logging purposes
 			String subdomainURL = "http://" +subdomain + ".ics.uci.edu/";
 			if(subdomains.containsKey(subdomainURL))
 				subdomains.put(subdomainURL, subdomains.get(subdomainURL)+1);
@@ -95,40 +103,28 @@ public class Crawler extends WebCrawler {
 				subdomains.put(subdomainURL, 1);
 		}
 
+		//does text parsing for tokenizing
 		if (page.getParseData() instanceof HtmlParseData) {
 			HtmlParseData htmlParseData = (HtmlParseData) page.getParseData();
-			String text = htmlParseData.getText();
-			String html = htmlParseData.getHtml();
 
+			String text = htmlParseData.getText();
 			List<WebURL> links = htmlParseData.getOutgoingUrls();
 
+			//adds all the links to the list for later output
 			for(WebURL link: links){
 				seeds.put(link.toString(), 1);
 			}
 
+			//tokenizes all text on the page and pairs it with URL
 			ArrayList<String> tokenList = Utilities.tokenizeString(text);
-			int wordsOnPage= tokenList.size();
+			int wordsOnPage = tokenList.size();
 			URLList.put(url, wordsOnPage);
 
 			//add all tokens to master token list
 			List<Frequency> currentTokens = WordFrequencyCounter.computeWordFrequencies(tokenList);
 
-			for(int i = 0; i < currentTokens.size(); i++)
-			{
-				Frequency f = currentTokens.get(i);
-				int value = f.getFrequency();
-				if(totalTokenList.containsKey(f.getText()))
-					value += totalTokenList.get(f.getText());
-				totalTokenList.put(f.getText(), value);
-			}
-			//			System.out.println(totalTokenList);
-
 			//maps token list to individual URL
 			urlMapper.put(url, (ArrayList<Frequency>) currentTokens);
-			//                    System.out.println("Text length: " + text.length());
-			//                    System.out.println("Html length: " + html.length());
-			//			System.out.println(currentTokens);
-			//			System.out.println("Number of outgoing links: " + links.size());
 
 		}
 	}
@@ -136,8 +132,7 @@ public class Crawler extends WebCrawler {
 	public void printToFile()
 	{
 		System.out.println("Printing to files");
-		//if we have hit an increment of 25 pages, print out the current state
-		//so we can run from where we left off later
+
 		PrintWriter pw = null;
 		try {
 
@@ -156,7 +151,7 @@ public class Crawler extends WebCrawler {
 			}
 			pw.close();
 
-			//output visited pages in file
+			//output visited pages to file
 			pw = new PrintWriter(new File("visited.txt"));
 			for(String url: URLList.keySet()){
 				pw.write(url+ " " + URLList.get(url) + "\n");
@@ -185,6 +180,7 @@ public class Crawler extends WebCrawler {
 		System.out.println("Done printing to files");
 	}
 
+	//load data from files into Crawler memory space
 	public void loadData()
 	{
 		try {
@@ -214,6 +210,7 @@ public class Crawler extends WebCrawler {
 
 	}
 
+	//determines if given url is part of a subdomain or not
 	public String getSubdomain(String URL)
 	{
 		if(URL.equals("http://www.ics.uci.edu/"))
@@ -227,72 +224,4 @@ public class Crawler extends WebCrawler {
 		return s2[0];
 	}
 
-//	public void printEndResults(HashMap<String, Integer> stopWords) {
-//
-//		//prints number of subdomains
-////		System.out.println("There are " + subdomains.size() + " subdomains");
-//
-//		//sorts the subdomains in alphabetical order
-//		ArrayList<String> al = new ArrayList<String>();
-//		for(String s: subdomains.keySet())
-//		{
-//			al.add(s);
-//		}
-//
-//		String[] subdomainsPrint = Arrays.copyOf(al.toArray(), al.size(), String[].class);
-//		Arrays.sort(subdomainsPrint);
-//
-//		//writes the subdomains in order onto the file
-//		PrintWriter pw = null;
-//		try {
-//			pw = new PrintWriter(new File("Subdomains.txt"));
-//			for(int i = 0; i < subdomainsPrint.length; i++)
-//			{
-//				String subdomain = subdomainsPrint[i];
-//				pw.write(subdomain + ", " + subdomains.get(subdomain) + "\n");
-//			}
-//			pw.close();
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//
-//		//prints out the top 500 words by number of occurrences
-//		PriorityQueue<Frequency> topWords = new PriorityQueue<Frequency>(totalTokenList.size(), WordFrequencyCounter.freqComparator);
-//
-//		
-//		pw = null;
-//		try {
-//			pw = new PrintWriter(new File("Subdomains.txt"));
-//			for(int i = 0; i < subdomainsPrint.length; i++)
-//			{
-//				String subdomain = subdomainsPrint[i];
-//				pw.write(subdomain + ", " + subdomains.get(subdomain) + "\n");
-//			}
-//			pw.close();
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//		}
-//		//adds tokens to top 500 list if they aren't in the list of stop words
-//		for(String s : totalTokenList.keySet())
-//		{
-//			//if the top word is > 1 character add it
-//			if(!stopWords.containsKey(s) && s.length() > 1)
-//				topWords.add(new Frequency(s,totalTokenList.get(s)));
-//		}
-//
-//		try {
-//			pw = new PrintWriter(new File("CommonWords.txt"));
-//			for(int i = 500; i > 0 && !topWords.isEmpty(); i--)
-//			{
-//				pw.write(topWords.poll() + " \n");
-//			}
-//
-//			pw.close();
-//		} catch (FileNotFoundException e) {
-//			e.printStackTrace();
-//
-//		}
-//
-//
-//	}
 }
