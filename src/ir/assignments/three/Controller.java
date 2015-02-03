@@ -1,3 +1,8 @@
+//Ronnie Nguyen 22768608
+//Jeffrey Fellows 34201703
+
+//basic for gotten from the example on https://code.google.com/p/crawler4j/
+
 package ir.assignments.three;
 
 import ir.assignments.two.a.Frequency;
@@ -30,12 +35,10 @@ public class Controller {
 			printResults();
 			return;
 		}
-	
-		//		System.out.println(stopWords.toString());
 
 		Date startTime = Calendar.getInstance().getTime();
 		String crawlStorageFolder = "dump";
-		int numberOfCrawlers = 100;
+		int numberOfCrawlers = 10;
 
 		CrawlConfig config = new CrawlConfig();
 		config.setUserAgentString("UCI Inf141-CS121 crawler 34201703 22768608");
@@ -43,6 +46,7 @@ public class Controller {
 		config.setResumableCrawling(false);
 		config.setMaxPagesToFetch(60000);
 		config.setCrawlStorageFolder(crawlStorageFolder);
+		
 		/*
 		 * Instantiate the controller for this crawl.
 		 */
@@ -59,7 +63,14 @@ public class Controller {
 		//            controller.addSeed("http://www.ics.uci.edu/~lopes/");
 		Crawler c = new Crawler();
 		c.loadData();
+		
+		//This seed will only be added on the first run of the crawler
+		//should be commented out after the first run
+		
 //				controller.addSeed("http://www.ics.uci.edu/");
+		
+		//if this is not the first run of the crawler, then it will read
+		//all the queued links in the queue.txt file to make the seeds
 		try {
 			s = new Scanner(new File("queue.txt"));
 			while(s.hasNext())
@@ -80,17 +91,25 @@ public class Controller {
 		 */
 
 		controller.start(c.getClass(), numberOfCrawlers);   
+		
+		//outputs to files the queue of urls that still need to be visited, 
+		//subdomains visited, urls visited, and tokens/their urls 
 		c.printToFile();
 
+		//calculates the time this specific run took
 		Date endTime = Calendar.getInstance().getTime();
 		PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter("metadata.txt", true)));
 		pw.write(endTime.getTime() + " " + startTime.getTime() + " ");
 		pw.close();
 		System.out.println("The program took a total of : " + (endTime.getTime()-startTime.getTime())/1000/60 + " minutes");
+		
+		//updates the index file with all of the words hit in this last run
 		updateIndex();
-		//c.printEndResults(stopWords);
 	}
 	
+	//uses files written to after each crawl to compute some final results
+	//these final results include 500 most common words, total run time
+	//url with the most words, and sorted subdomains
 	public static void printResults()
 	{
 		HashMap<String, Integer> stopWords = new HashMap<String, Integer>();
@@ -137,7 +156,6 @@ public class Controller {
 			//create priority queue for all words
 			PriorityQueue<Frequency> priorityQueue = new PriorityQueue<Frequency>(500, WordFrequencyCounter.freqComparator);
 			s = new Scanner (new File("Index.txt"));
-			HashMap<String, Integer> commonWords = new HashMap<String, Integer>();
 			
 			while(s.hasNextLine()){
 				String line = s.nextLine();
@@ -205,6 +223,8 @@ public class Controller {
 		
 	}
 
+	//takes all the words hit in the current crawl and updates the main index 
+	//with these words
 	public static void updateIndex()
 	{
 		try {
