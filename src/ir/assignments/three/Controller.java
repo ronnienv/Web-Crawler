@@ -25,11 +25,11 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 public class Controller {
 	public static void main(String[] args) throws Exception {
 		Scanner s = null;
-//		if(true)
-//		{
-//			printResults();
-//			return;
-//		}
+		if(true)
+		{
+			printResults();
+			return;
+		}
 	
 		//		System.out.println(stopWords.toString());
 

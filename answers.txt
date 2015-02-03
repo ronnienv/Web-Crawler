@@ -1,1 +1,14 @@
-Put your answers to the questions here, on in a similarly named .doc or .pdf file.
+1. How much time did it take to crawl the entire domain?
+- 7.041728333333334 hours
+
+2. How many unique pages did you find in the entire domain? (Uniqueness is established by the URL, not the page's content.)
+- 42489 pages
+
+3. How many subdomains did you find?
+- 74
+
+4. What is the longest page in terms of number of words? 
+- The page http://archive.ics.uci.edu/ml/machine-learning-databases/00262/turkiye-student-evaluation_r_specific.csv has the most words with 197914
+
+5. What are the 500 most common words?
+- Check CommonWords.txt
